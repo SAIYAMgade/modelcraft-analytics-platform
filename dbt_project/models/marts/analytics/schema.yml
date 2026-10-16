@@ -1,0 +1,50 @@
+version: 2
+
+models:
+  - name: mart_daily_sales
+    description: "Daily business metrics aggregating GMV, freight, order counts, and delivery durations."
+    columns:
+      - name: date_day
+        description: "Primary key for daily sales."
+        tests:
+          - unique
+          - not_null
+      - name: gross_merchandise_value
+        description: "Sum of item sales (excluding freight) on purchase date."
+        tests:
+          - not_null
+      - name: total_orders
+        description: "Count of unique orders placed on date."
+        tests:
+          - not_null
+
+  - name: mart_product_performance
+    description: "Product category-level revenue, unit volumes, and shipping cost analysis."
+    columns:
+      - name: category_name
+        description: "Product category name."
+        tests:
+          - unique
+          - not_null
+      - name: total_gross_sales
+        description: "Total sales volume including freight in BRL."
+        tests:
+          - not_null
+
+  - name: mart_fulfillment_performance
+    description: "Monthly logistics fulfillment metrics including SLA on-time delivery rates and transit days."
+    columns:
+      - name: order_month
+        description: "Year and month (YYYY-MM)."
+        tests:
+          - unique
+          - not_null
+
+  - name: mart_customer_behavior
+    description: "Customer lifetime value and repeat purchase behavioral cohorts."
+    columns:
+      - name: buyer_cohort
+        description: "Purchase frequency segment."
+        tests:
+          - unique
+          - not_null

@@ -1,0 +1,19 @@
+# =========================================================================
+# Render Blueprint Specification for CommerceFlow
+# Deploy directly by linking your GitHub repository to Render
+# =========================================================================
+services:
+  - type: web
+    name: commerceflow-platform
+    env: docker
+    plan: free
+    region: oregon
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: PORT
+        value: "8000"
+      - key: PYTHONUNBUFFERED
+        value: "1"
+      - key: AUTO_PING_KEEP_ALIVE
+        value: "true"

@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+
+# Node
+node_modules/
+frontend/node_modules/
+frontend/dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment & OS
+.env
+.DS_Store
+Thumbs.db
+
+# Database & Analytics Storage (Keep structure, ignore local DB binaries)
+*.duckdb.wal
+data/warehouse/*.duckdb
+data/warehouse/*.db
+
+# Virtual Environments
+.venv/
+venv/
+ENV/
+env/
+
+# Logs and Temp
+*.log
+step_*.txt
+
+# dbt
+target/
+dbt_project/target/
+dbt_packages/
+dbt_project/dbt_packages/
+logs/
+dbt_project/logs/

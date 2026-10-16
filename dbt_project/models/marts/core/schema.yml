@@ -1,0 +1,103 @@
+version: 2
+
+models:
+  - name: fact_orders
+    description: "Central fact table at the grain of one row per order. Consolidates fulfillment timelines, order totals, and payment reconciliation without line-item fanout."
+    columns:
+      - name: order_id
+        description: "Primary key for fact_orders."
+        tests:
+          - unique
+          - not_null
+      - name: customer_id
+        description: "Foreign key to dim_customers."
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_customers')
+                field: customer_id
+      - name: order_status
+        description: "Order lifecycle state."
+        tests:
+          - not_null
+      - name: total_order_cost
+        description: "Sum of item prices and freight values for the order."
+        tests:
+          - not_null
+
+  - name: fact_order_items
+    description: "Fact table at the grain of one row per purchased line item, capturing item price, freight, product, and seller foreign keys."
+    columns:
+      - name: order_id
+        description: "Foreign key to fact_orders."
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('fact_orders')
+                field: order_id
+      - name: order_item_id
+        description: "Sequence number of item within order."
+        tests:
+          - not_null
+      - name: product_id
+        description: "Foreign key to dim_products."
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_products')
+                field: product_id
+      - name: seller_id
+        description: "Foreign key to dim_sellers."
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_sellers')
+                field: seller_id
+      - name: item_price
+        description: "Unit item price in BRL."
+        tests:
+          - not_null
+
+  - name: dim_customers
+    description: "Customer dimension providing postal code, geographic state, and aggregated lifetime purchase history per unique buyer."
+    columns:
+      - name: customer_id
+        description: "Order-level transaction customer identifier."
+        tests:
+          - unique
+          - not_null
+      - name: customer_unique_id
+        description: "Natural key identifying the individual customer."
+        tests:
+          - not_null
+
+  - name: dim_products
+    description: "Product catalog dimension containing English category translations and physical measurements."
+    columns:
+      - name: product_id
+        description: "Unique product identifier."
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_sellers
+    description: "Merchant seller dimension with city and state attributes."
+    columns:
+      - name: seller_id
+        description: "Unique seller identifier."
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_date
+    description: "Calendar date spine dimension supporting daily cohort and time-series analysis."
+    columns:
+      - name: date_day
+        description: "Calendar date."
+        tests:
+          - unique
+          - not_null

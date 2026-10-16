@@ -1,0 +1,44 @@
+version: 2
+
+models:
+  - name: int_order_items_enriched
+    description: "Order items joined with catalog categories, product dimensions, and seller location attributes."
+    columns:
+      - name: order_id
+        description: "Parent order identifier."
+        tests:
+          - not_null
+      - name: order_item_id
+        description: "Sequential item identifier within order."
+        tests:
+          - not_null
+      - name: product_id
+        description: "Product catalog identifier."
+        tests:
+          - not_null
+      - name: item_price
+        description: "Unit item price."
+        tests:
+          - not_null
+
+  - name: int_order_payments_aggregated
+    description: "Order-level payment aggregation combining transactions, methods, and installment metrics."
+    columns:
+      - name: order_id
+        description: "Unique order identifier."
+        tests:
+          - unique
+          - not_null
+      - name: total_payment_value
+        description: "Total payment amount processed across all payment transactions."
+        tests:
+          - not_null
+
+  - name: int_order_fulfillment
+    description: "Delivery milestone lead times, SLA variance, and on-time delivery classification."
+    columns:
+      - name: order_id
+        description: "Order identifier."
+        tests:
+          - unique
+          - not_null

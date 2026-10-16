@@ -1,0 +1,93 @@
+version: 2
+
+models:
+  - name: stg_orders
+    description: "Standardized order headers with cleaned timestamp fields and normalized order status values."
+    columns:
+      - name: order_id
+        description: "Primary key for orders."
+        tests:
+          - unique
+          - not_null
+      - name: customer_id
+        description: "Customer reference identifier."
+        tests:
+          - not_null
+      - name: order_status
+        description: "Current lifecycle state."
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['delivered', 'shipped', 'canceled', 'invoiced', 'processing', 'created', 'approved', 'unavailable']
+
+  - name: stg_order_items
+    description: "Purchased order items with validated numeric prices and freight charges."
+    columns:
+      - name: order_id
+        description: "Parent order identifier."
+        tests:
+          - not_null
+      - name: order_item_id
+        description: "Item sequence number within the order."
+        tests:
+          - not_null
+      - name: product_id
+        description: "Catalog product identifier."
+        tests:
+          - not_null
+      - name: seller_id
+        description: "Merchant seller identifier."
+        tests:
+          - not_null
+      - name: item_price
+        description: "Item unit price in BRL."
+        tests:
+          - not_null
+
+  - name: stg_order_payments
+    description: "Normalized payment transactions per order."
+    columns:
+      - name: order_id
+        description: "Order identifier."
+        tests:
+          - not_null
+      - name: payment_sequential
+        description: "Payment sequence number."
+        tests:
+          - not_null
+      - name: payment_type
+        description: "Payment instrument used."
+        tests:
+          - not_null
+
+  - name: stg_customers
+    description: "Customer records standardizing postal codes and city/state names."
+    columns:
+      - name: customer_id
+        description: "Per-order customer key."
+        tests:
+          - unique
+          - not_null
+      - name: customer_unique_id
+        description: "Master unique customer identifier across lifetime orders."
+        tests:
+          - not_null
+
+  - name: stg_products
+    description: "Product catalog records with dimensional measurements and category names."
+    columns:
+      - name: product_id
+        description: "Primary key for products."
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_sellers
+    description: "Seller registry records with location data."
+    columns:
+      - name: seller_id
+        description: "Primary key for sellers."
+        tests:
+          - unique
+          - not_null

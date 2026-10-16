@@ -1,0 +1,36 @@
+name: 'commerceflow_dbt'
+version: '1.0.0'
+config-version: 2
+
+profile: 'commerceflow_duckdb'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  commerceflow_dbt:
+    staging:
+      +materialized: view
+      +schema: main
+    intermediate:
+      +materialized: view
+      +schema: main
+    marts:
+      core:
+        +materialized: table
+        +schema: main
+      analytics:
+        +materialized: table
+        +schema: main
+
+snapshots:
+  commerceflow_dbt:
+    +target_schema: main

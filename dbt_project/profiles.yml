@@ -1,0 +1,7 @@
+commerceflow_duckdb:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: "{{ env_var('DUCKDB_PATH', 'C:/Users/saiya/Desktop/Qurrey/data/warehouse/commerceflow_analytics.duckdb') }}"
+      threads: 4

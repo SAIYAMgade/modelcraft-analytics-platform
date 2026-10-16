@@ -1,0 +1,109 @@
+version: 2
+
+sources:
+  - name: bronze
+    description: "Raw ingested tables loaded from canonical Olist CSV datasets into DuckDB Bronze layer."
+    database: commerceflow_analytics
+    schema: main
+    tables:
+      - name: bronze_orders
+        description: "Raw order header records with timestamps and order status."
+        columns:
+          - name: order_id
+            description: "Unique 32-character hexadecimal order identifier."
+          - name: customer_id
+            description: "Key linking to customer record for this specific transaction."
+          - name: order_status
+            description: "Order lifecycle state (delivered, shipped, canceled, etc.)."
+          - name: order_purchase_timestamp
+            description: "Timestamp when the customer placed the order."
+          - name: order_approved_at
+            description: "Payment approval timestamp."
+          - name: order_delivered_carrier_date
+            description: "Timestamp when the order was handed over to the carrier logistics partner."
+          - name: order_delivered_customer_date
+            description: "Actual timestamp of package delivery to the customer."
+          - name: order_estimated_delivery_date
+            description: "Promised estimated delivery deadline communicated at purchase."
+
+      - name: bronze_order_items
+        description: "Raw purchased item line details per order."
+        columns:
+          - name: order_id
+            description: "Foreign key to bronze_orders."
+          - name: order_item_id
+            description: "Sequential integer indexing the item count within the order."
+          - name: product_id
+            description: "Unique product catalog identifier."
+          - name: seller_id
+            description: "Unique seller identifier."
+          - name: price
+            description: "Item unit price in BRL."
+          - name: freight_value
+            description: "Item shipping fee in BRL."
+
+      - name: bronze_order_payments
+        description: "Raw payment transactions recorded across payment gateways."
+        columns:
+          - name: order_id
+            description: "Foreign key to bronze_orders."
+          - name: payment_sequential
+            description: "Sequence number of payment method applied to order."
+          - name: payment_type
+            description: "Payment method (credit_card, boleto, voucher, debit_card)."
+          - name: payment_installments
+            description: "Number of credit installments chosen by customer."
+          - name: payment_value
+            description: "Transaction amount processed in BRL."
+
+      - name: bronze_customers
+        description: "Raw customer records mapping order-level customer_id to persistent customer_unique_id."
+        columns:
+          - name: customer_id
+            description: "Per-order unique identifier."
+          - name: customer_unique_id
+            description: "Natural key identifying the real unique individual."
+          - name: customer_zip_code_prefix
+            description: "Five-digit Brazilian postal code prefix."
+          - name: customer_city
+            description: "City name."
+          - name: customer_state
+            description: "Two-letter Brazilian state code."
+
+      - name: bronze_products
+        description: "Raw product catalog attributes including category and physical dimensions."
+        columns:
+          - name: product_id
+            description: "Unique product identifier."
+          - name: product_category_name
+            description: "Portuguese product category name."
+
+      - name: bronze_sellers
+        description: "Raw merchant catalog records with location metadata."
+        columns:
+          - name: seller_id
+            description: "Unique seller identifier."
+          - name: seller_zip_code_prefix
+            description: "Seller postal code prefix."
+          - name: seller_city
+            description: "Seller city."
+          - name: seller_state
+            description: "Seller state code."
+
+      - name: bronze_order_reviews
+        description: "Raw customer satisfaction feedback scores and comments."
+        columns:
+          - name: review_id
+            description: "Review identifier."
+          - name: order_id
+            description: "Order identifier."
+          - name: review_score
+            description: "Customer rating from 1 to 5."
+
+      - name: bronze_category_translation
+        description: "Mapping of Portuguese category names to English translations."
+        columns:
+          - name: product_category_name
+            description: "Portuguese category key."
+          - name: product_category_name_english
+            description: "English category name."
